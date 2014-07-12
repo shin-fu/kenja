@@ -10,7 +10,7 @@ from gitdb.util import bin_to_hex
 from StringIO import StringIO
 
 blob_mode = '100644'
-tree_mode = '040000'
+tree_mode = '40000'
 
 
 def tree_item_str(mode, file_name, binsha):
