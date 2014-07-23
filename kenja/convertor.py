@@ -6,6 +6,7 @@ from git.objects import Blob
 from kenja.parser import ParserExecutor
 from kenja.git.util import get_reversed_topological_ordered_commits
 from kenja.committer import SyntaxTreesCommitter
+from git import GitCmdObjectDB
 
 
 class HistorageConverter:
@@ -13,7 +14,7 @@ class HistorageConverter:
 
     def __init__(self, org_git_repo_dir, working_dir):
         if org_git_repo_dir:
-            self.org_repo = Repo(org_git_repo_dir)
+            self.org_repo = Repo(org_git_repo_dir, odbt=GitCmdObjectDB)
 
         if not(os.path.isdir(working_dir)):
             raise Exception('%s is not a directory' % (working_dir))
@@ -55,6 +56,7 @@ class HistorageConverter:
     def prepare_base_repo(self):
         base_repo_dir = os.path.join(self.working_dir, 'base_repo')
         base_repo = Repo.init(base_repo_dir, bare=self.is_bare_repo)
+        base_repo = Repo(base_repo_dir, odbt=GitCmdObjectDB)
         return base_repo
 
     def convert(self):
@@ -65,7 +67,8 @@ class HistorageConverter:
         print 'create historage...'
 
         base_repo = self.prepare_base_repo()
-        committer = SyntaxTreesCommitter(Repo(self.org_repo.git_dir), base_repo, self.syntax_trees_dir)
+        org_repo = Repo(self.org_repo.git_dir, odbt=GitCmdObjectDB)
+        committer = SyntaxTreesCommitter(org_repo, base_repo, self.syntax_trees_dir)
         num_commits = self.num_commits if self.num_commits != 0 else '???'
         for num, commit in izip(count(), get_reversed_topological_ordered_commits(self.org_repo, self.org_repo.refs)):
             commit = self.org_repo.commit(commit)
