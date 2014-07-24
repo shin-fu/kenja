@@ -20,9 +20,10 @@ def execute_parser(cmd, src):
 class ParserExecutor:
     parser_class = "jp.naist.sd.kenja.factextractor.GitTreeCreator"
 
-    def __init__(self, output_dir, parser_path, processes=None):
+    def __init__(self, output_dir, parser_path, org_repo_dir, processes=None):
         self.output_dir = output_dir
         self.parser_path = parser_path
+        self.org_repo_dir = org_repo_dir
         self.processes = processes if processes else cpu_count()
         self.pool = Pool(self.processes)
         self.closed = False
@@ -53,7 +54,8 @@ class ParserExecutor:
                "-cp",
                self.parser_path,
                self.parser_class,
-               self.output_dir
+               self.output_dir,
+               self.org_repo_dir
                ]
         return cmd
 

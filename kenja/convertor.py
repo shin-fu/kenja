@@ -31,7 +31,7 @@ class HistorageConverter:
 
     def parse_all_java_files(self):
         print 'create paresr processes...'
-        parser_executor = ParserExecutor(self.syntax_trees_dir, self.parser_jar_path)
+        parser_executor = ParserExecutor(self.syntax_trees_dir, self.parser_jar_path, self.org_repo.git_dir)
         parsed_blob = set()
         for commit in get_reversed_topological_ordered_commits(self.org_repo, self.org_repo.refs):
             self.num_commits = self.num_commits + 1
