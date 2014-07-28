@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 import re
+from git import Repo
 
 
 class GitDiffParser:
@@ -47,3 +48,21 @@ class GitDiffParser:
                 b_blob_index = int(match.group(2))
 
         return (deleted_lines, added_lines)
+
+
+def check_same_repository(a_repo_path, b_repo_path):
+    a_repo = Repo(a_repo_path)
+    b_repo = Repo(b_repo_path)
+    print(check_branches(a_repo, b_repo))
+
+def check_branches(a_repo, b_repo):
+    a_branches = set([branch.name for branch in a_repo.branches])
+    b_branches = set([branch.name for branch in b_repo.branches])
+    return a_branches == b_branches
+
+
+if __name__ == '__main__':
+    import sys
+    if(len(sys.argv) != 3):
+        print("{0} {1} {2}".format(sys.argv[0], "a_repo", "b_repo"))
+    check_same_repository(sys.argv[1], sys.argv[2])
